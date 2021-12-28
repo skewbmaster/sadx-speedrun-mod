@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sadx-speedrun-mod", "sadx-speedrun-mod\sadx-speedrun-mod.vcxproj", "{254D4E46-0993-4B43-B44D-FD8F25697581}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{254D4E46-0993-4B43-B44D-FD8F25697581}.Debug|x86.ActiveCfg = Debug|Win32
+		{254D4E46-0993-4B43-B44D-FD8F25697581}.Debug|x86.Build.0 = Debug|Win32
+		{254D4E46-0993-4B43-B44D-FD8F25697581}.Release|x86.ActiveCfg = Debug|Win32
+		{254D4E46-0993-4B43-B44D-FD8F25697581}.Release|x86.Build.0 = Debug|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B90A7F9F-5688-4BFF-A324-9DA77523FDD9}
+	EndGlobalSection
+EndGlobal

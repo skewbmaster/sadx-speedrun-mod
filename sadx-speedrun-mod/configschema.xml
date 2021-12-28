@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<ConfigSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sonicretro.org">
+  <Groups>
+    <Group name="QuickSaveSettings" display="Quick Save Settings">
+      <Property name="SaveFilePath" type="string" defaultvalue="" display="Save File Path" >
+        <HelpText>The save file that will reload when you go back to the main menu. Enter path relative to sadx folder e.g. Save in savedata folder: savedata/knuxsave.snc</HelpText>
+      </Property>
+      <Property name="SaveNum" type="int" defaultvalue="99" minvalue="1" maxvalue="99" display="In-game save number" >
+        <HelpText>This is the save number in game that will be used, other save files will not be affected but this one. e.g. Choosing number 8 will only replace SonicDX08.snc</HelpText>
+      </Property>
+    </Group>
+	
+	<Group name="OtherSettings">
+	  
+	</Group>
+  </Groups>
+</ConfigSchema>
