@@ -101,7 +101,7 @@ void init_quick_save_reload(std::string savepath, std::string filepath, int save
 
 void onFrame_quick_save_reload()
 {
-	if (previous_game_mode != 12 && GameMode == 12)
+	if (previous_game_mode != 12 && GameMode == 12 && init)
 	{
 		reload_message_displayed = true;
 		reload_message_timer = 0;
