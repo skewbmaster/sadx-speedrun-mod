@@ -6,8 +6,8 @@
 #include <filesystem>
 #include <string>
 
-#define STARTUP_MESSAGE_TIMER_LENGTH 1200
-#define RELOAD_MESSAGE_TIMER_LENGTH 270
+#define STARTUP_MESSAGE_TIMER_LENGTH 900
+#define RELOAD_MESSAGE_TIMER_LENGTH 220
 
 bool init = false;
 
@@ -28,7 +28,8 @@ int save_num;
 std::string game_save_file_path;
 std::string game_save_file_name;
 
-int previous_game_mode;
+int oldGameMode;
+int completedGammaLevels = 0;
 
 bool load_save_file_data()
 {
@@ -101,8 +102,19 @@ void init_quick_save_reload(std::string savepath, std::string filepath, int save
 
 void onFrame_quick_save_reload()
 {
-	if (previous_game_mode != 12 && GameMode == 12 && init)
+	if (oldGameMode != 12 && GameMode == 12 && init)
 	{
+		if ((SaveFile.Emblems[0xB] & 0x8 && !(SaveFile.Emblems[0xB] & 0x2) && completedGammaLevels == 0) // If done with gamma hot shelter but not red mountain, and not incremented
+			|| (SaveFile.Emblems[0xB] & 0x2 && completedGammaLevels == 1) // If done with red mountain and only incremented levels once
+			|| (SaveFile.Emblems[0xB] & 0x1 && completedGammaLevels == 2)) // If done with windy valley and only incremented levels twice
+		{
+			completedGammaLevels++;
+			oldGameMode = 12;
+			return;
+		}
+
+		completedGammaLevels = 0;
+
 		reload_message_displayed = true;
 		reload_message_timer = 0;
 
@@ -111,7 +123,7 @@ void onFrame_quick_save_reload()
 		LoadSave();
 	}
 
-	previous_game_mode = GameMode;
+	oldGameMode = GameMode;
 
 	if (startup_message_timer < STARTUP_MESSAGE_TIMER_LENGTH)
 	{
