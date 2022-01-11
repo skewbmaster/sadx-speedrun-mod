@@ -98,9 +98,10 @@
   <ItemGroup>
     <ClInclude Include="framework.h" />
     <ClInclude Include="pch.h" />
-    <ClInclude Include="quick-save-reload.h" />
+    <ClInclude Include="modules.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="gamma-timer.cpp" />
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
