@@ -1,9 +1,9 @@
 #include "modules.h"
 #include "pch.h"
 
-static char gammaFrames;
-static char gammaSeconds;
-static char gammaMinutes;
+__declspec(dllexport) char gammaFrames;
+__declspec(dllexport) char gammaSeconds;
+__declspec(dllexport) char gammaMinutes;
 
 void init_gamma_timer(char* injectedMemory)
 {
@@ -13,7 +13,7 @@ void init_gamma_timer(char* injectedMemory)
 
 	int gammaFramesPointer = (int)(&gammaFrames);
 
-	PrintDebug("Frames Pointer: %d\n", gammaFramesPointer);
+	PrintDebug("Frames Pointer: %X\n", gammaFramesPointer);
 
 	char instructions[] = { 0xFF, 0x05, gammaFramesPointer & 0xFF, (gammaFramesPointer >> 8) & 0xFF, (gammaFramesPointer >> 16) & 0xFF, (gammaFramesPointer >> 24) & 0xFF,
 							0xFE, 0x0D, 0x35, 0xEF, 0xB0, 0x03 }; // Increment our own frame counter and decrement in-game frames as original code
