@@ -1,19 +1,22 @@
 #include "modules.h"
 #include "pch.h"
 
-__declspec(dllexport) char gammaFrames;
-__declspec(dllexport) char gammaSeconds;
-__declspec(dllexport) char gammaMinutes;
+static char gammaFrames;
+static char gammaSeconds;
+static char gammaMinutes;
 
-void init_gamma_timer(char* injectedMemory)
+
+
+void init_gamma_timer(char* injectedMemory, char* accessibleMemory)
 {
+	PrintDebug("injectMem Pointer: %X\n", injectedMemory);
+	PrintDebug("accessMem Pointer: %X\n", accessibleMemory);
+
 	gammaFrames = 0;
 	gammaSeconds = 0;
 	gammaMinutes = 0;
-
-	int gammaFramesPointer = (int)(&gammaFrames);
-
-	PrintDebug("Frames Pointer: %X\n", gammaFramesPointer);
+	
+	int gammaFramesPointer = (int)&gammaFrames;
 
 	char instructions[] = { 0xFF, 0x05, gammaFramesPointer & 0xFF, (gammaFramesPointer >> 8) & 0xFF, (gammaFramesPointer >> 16) & 0xFF, (gammaFramesPointer >> 24) & 0xFF,
 							0xFE, 0x0D, 0x35, 0xEF, 0xB0, 0x03 }; // Increment our own frame counter and decrement in-game frames as original code
@@ -24,6 +27,11 @@ void init_gamma_timer(char* injectedMemory)
 
 	WriteJump((void*) 0x42608F, injectedMemory); // Inject frame increase
 	WriteData<1>((void*) 0x426094, (uint8_t) 0x90); // Add extra nop to pad out memory
+
+	WriteData((void*) 0x426028, (void*) &accessibleMemory, 4); // Write our memory pointer into padded sonic.exe memory
+	WritePointer(accessibleMemory, (int) &gammaFrames); // Write gammaFrames pointer into our memory at 0x0
+	WritePointer(accessibleMemory + 0x4, (int) &gammaSeconds); // Write gammaSeconds pointer into our memory at 0x4
+	WritePointer(accessibleMemory + 0x8, (int) &gammaMinutes); // Write gammaMinutes pointer into our memory at 0x8
 }
 
 void run_gamma_timer()

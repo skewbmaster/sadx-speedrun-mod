@@ -5,6 +5,8 @@ static bool isQuickSaveEnabled;
 
 static char* injectedMemory;
 
+static char* accessibleMemory;
+
 extern "C"
 {
 	__declspec(dllexport) void __cdecl Init(const char* path, const HelperFunctions& helper_funcs)
@@ -35,9 +37,11 @@ extern "C"
 			}
 		}
 
-		injectedMemory = (char*)malloc(40);
+		injectedMemory = (char*) malloc(64);
+		accessibleMemory = (char*) malloc(64);
 
-		init_gamma_timer(injectedMemory); // 17 Bytes used in injected mem
+		init_gamma_timer(injectedMemory,    // 17 Bytes used in injectedMemory
+			             accessibleMemory); // 12 Bytes used in accessibleMemory
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame()

@@ -181,6 +181,11 @@ static inline BOOL WriteCall(void *writeaddress, void *funcaddress)
 	return WriteData(writeaddress, data);
 }
 
+static inline BOOL WritePointer(void* writeaddress, int pointeraddress)
+{
+	return WriteData(writeaddress, (void*) &pointeraddress, 4);
+}
+
 #endif
 
 // Data pointer and array declarations.
