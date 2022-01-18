@@ -9,9 +9,6 @@ static char gammaMinutes;
 
 void init_gamma_timer(char* injectedMemory, char* accessibleMemory)
 {
-	PrintDebug("injectMem Pointer: %X\n", injectedMemory);
-	PrintDebug("accessMem Pointer: %X\n", accessibleMemory);
-
 	gammaFrames = 0;
 	gammaSeconds = 0;
 	gammaMinutes = 0;
@@ -25,7 +22,7 @@ void init_gamma_timer(char* injectedMemory, char* accessibleMemory)
 
 	WriteJump((void*) (injectedMemory + 12), (void*) 0x426095); // Go back to original function
 
-	WriteJump((void*) 0x42608F, injectedMemory); // Inject frame increase
+	WriteJump((void*) 0x42608F, injectedMemory); // Inject frame increase into TimerTick Function
 	WriteData<1>((void*) 0x426094, (uint8_t) 0x90); // Add extra nop to pad out memory
 
 	WriteData((void*) 0x426028, (void*) &accessibleMemory, 4); // Write our memory pointer into padded sonic.exe memory

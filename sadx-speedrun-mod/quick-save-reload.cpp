@@ -23,6 +23,7 @@ int startup_message_timer = 0;
 SaveFileData* save_file_data;
 
 std::string save_file_path;
+
 int save_num;
 
 std::string game_save_file_path;
@@ -31,51 +32,19 @@ std::string game_save_file_name;
 int oldGameMode;
 int completedGammaLevels = 0;
 
-bool load_save_file_data()
-{
-	save_file_data = (SaveFileData*)malloc(sizeof(SaveFileData));
-	char* buffer = (char*)malloc(sizeof(SaveFileData));
-	if (!std::filesystem::exists(save_file_path))
-	{
-		bad_path = true;
-		return false;
-	}
+bool load_save_file_data();
+bool write_to_dest_save_file();
+void inject_failsafe_code(char* injectedMemory);
 
-	int file_size = std::filesystem::file_size(save_file_path);
-	PrintDebug("%d\n", file_size);
-	if (file_size != sizeof(SaveFileData))
-	{
-		bad_file = true;
-		return false;
-	}
-	std::ifstream file(save_file_path, std::ios::in | std::ios::binary);
-	if (!file.is_open())
-		return false;
-	file.read(buffer, sizeof(SaveFileData));
-	file.close();
-
-	memcpy(save_file_data, buffer, sizeof(SaveFileData));
-	free(buffer);
-
-	return true;
-}
-
-bool write_to_dest_save_file()
-{
-	std::ofstream save_file(game_save_file_path + game_save_file_name, std::ios::out | std::ios::binary);
-	if (!save_file.is_open())
-		return false;
-	save_file.write((char*)save_file_data, sizeof(SaveFileData));
-	save_file.close();
-
-	return true;
-}
-
-void init_quick_save_reload(std::string savepath, std::string filepath, int savenum)
+void init_quick_save_reload(std::string savepath, std::string filepath, int savenum, char* injectedMemory)
 {
 	save_file_path = filepath;
-	save_num = savenum;
 	game_save_file_path = savepath;
+
+	save_num = savenum;
+
+	inject_failsafe_code(injectedMemory); // Save to the same file every time
+
 
 	if (save_file_path.empty())
 		return;
@@ -189,3 +158,61 @@ void onFrame_quick_save_reload()
 			reload_message_displayed = false;
 	}
 }
+
+bool load_save_file_data()
+{
+	save_file_data = (SaveFileData*)malloc(sizeof(SaveFileData));
+	char* buffer = (char*)malloc(sizeof(SaveFileData));
+	if (!std::filesystem::exists(save_file_path))
+	{
+		bad_path = true;
+		return false;
+	}
+
+	int file_size = std::filesystem::file_size(save_file_path);
+	PrintDebug("%d\n", file_size);
+	if (file_size != sizeof(SaveFileData))
+	{
+		bad_file = true;
+		return false;
+	}
+	std::ifstream file(save_file_path, std::ios::in | std::ios::binary);
+	if (!file.is_open())
+		return false;
+	file.read(buffer, sizeof(SaveFileData));
+	file.close();
+
+	memcpy(save_file_data, buffer, sizeof(SaveFileData));
+	free(buffer);
+
+	return true;
+}
+
+bool write_to_dest_save_file()
+{
+	std::ofstream save_file(game_save_file_path + game_save_file_name, std::ios::out | std::ios::binary);
+	if (!save_file.is_open())
+		return false;
+	save_file.write((char*)save_file_data, sizeof(SaveFileData));
+	save_file.close();
+
+	return true;
+}
+
+void inject_failsafe_code(char* injectedMemory)
+{
+	char numchar1 = (char) (48 + save_num / 10); // Calculate ASCII character for the decimal digits
+	char numchar2 = (char) (48 + save_num % 10);
+
+	const char memSize = 0x19;
+
+	char code[memSize] = { 0x51, 0x52, 0x8B, 0xCE, 0xB2, numchar1, 0x83, 0xC1, 0x12, 0x88,
+						   0x11, 0xB2, numchar2, 0x83,	0xC1, 0x01, 0x88, 0x11, 0x5A, 0x59,
+						   0x68, 0x60, 0xDE, 0x7D, 0x00 };
+
+	memcpy(injectedMemory, code, memSize);
+	WriteJump(injectedMemory + memSize, (void*) 0x422160);
+
+	WriteJump((void*) 0x42215B, injectedMemory);
+}
+
