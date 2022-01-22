@@ -71,7 +71,7 @@ void init_quick_save_reload(std::string savepath, std::string filepath, int save
 
 void onFrame_quick_save_reload()
 {
-	if (oldGameMode != 12 && GameMode == 12 && init)
+	if (init && oldGameMode != 12 && GameMode == 12)
 	{
 		if ((SaveFile.Emblems[0xB] & 0x8 && !(SaveFile.Emblems[0xB] & 0x2) && completedGammaLevels == 0) // If done with gamma hot shelter but not red mountain, and not incremented
 			|| (SaveFile.Emblems[0xB] & 0x2 && completedGammaLevels == 1) // If done with red mountain and only incremented levels once
