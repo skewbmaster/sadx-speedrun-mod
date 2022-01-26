@@ -2091,6 +2091,7 @@ DataPointer(LPVOID, MESFile, 0x3ABDCF8);
 DataPointer(bool, FogEnabled, 0x3ABDCFE);
 DataArray(int, CamData, 0x3ABDF28, 6);
 DataArray(SETEntry *, SetFiles, 0x3ABDF40, 6);
+DataPointer(int, FrameCounter_CameraMain, 0x3B2C6C8);
 DataPointer(int, FrameCounter2, 0x3ABDF58);
 DataPointer(int, FrameCounterUnpaused, 0x3ABDF5C);
 DataPointer(EntityData1 *, Current_CharObj1, 0x3ABDF60);

@@ -34,16 +34,19 @@ int completedGammaLevels = 0;
 
 bool load_save_file_data();
 bool write_to_dest_save_file();
-void inject_failsafe_code(char* injectedMemory);
+void inject_failsafe_code();
 
-void init_quick_save_reload(std::string savepath, std::string filepath, int savenum, char* injectedMemory)
+static char* injectedMemory;
+
+void init_quick_save_reload(std::string savepath, std::string filepath, int savenum)
 {
 	save_file_path = filepath;
 	game_save_file_path = savepath;
 
 	save_num = savenum;
 
-	inject_failsafe_code(injectedMemory); // Save to the same file every time
+	injectedMemory = (char*) malloc(0x20);
+	inject_failsafe_code(); // Save to the same file every time
 
 
 	if (save_file_path.empty())
@@ -161,8 +164,8 @@ void onFrame_quick_save_reload()
 
 bool load_save_file_data()
 {
-	save_file_data = (SaveFileData*)malloc(sizeof(SaveFileData));
-	char* buffer = (char*)malloc(sizeof(SaveFileData));
+	save_file_data = (SaveFileData*) malloc(sizeof(SaveFileData));
+	char* buffer = (char*) malloc(sizeof(SaveFileData));
 	if (!std::filesystem::exists(save_file_path))
 	{
 		bad_path = true;
@@ -199,7 +202,7 @@ bool write_to_dest_save_file()
 	return true;
 }
 
-void inject_failsafe_code(char* injectedMemory)
+void inject_failsafe_code()
 {
 	char numchar1 = (char) (48 + save_num / 10); // Calculate ASCII character for the decimal digits
 	char numchar2 = (char) (48 + save_num % 10);

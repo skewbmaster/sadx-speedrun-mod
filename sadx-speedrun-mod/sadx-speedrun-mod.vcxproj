@@ -65,7 +65,7 @@
       <AdditionalDependencies>$(SolutionDir)bin\ModLoaderCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /C /Y /D "$(TargetDir)sadx-speedrun-mod.dll" "G:\SONICADVENTUREDX\mods\sadx-speedrun-mod\"
+      <Command>xcopy /C /Y /D "$(TargetPath)" "G:\SONICADVENTUREDX\mods\sadx-speedrun-mod\"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -91,18 +91,22 @@
       <AdditionalDependencies>$(SolutionDir)bin\ModLoaderCommon.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /C /Y /D "$(TargetDir)sadx-speedrun-mod.dll" "G:\SONICADVENTUREDX\mods\sadx-speedrun-mod\"
+      <Command>xcopy /C /Y /D "$(TargetPath)" "G:\SONICADVENTUREDX\mods\sadx-speedrun-mod\"
 </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
+    <ClInclude Include="new_igt_asm.h" />
+    <ClInclude Include="new_igt_autosplitter.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="modules.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="gamma-timer.cpp" />
     <ClCompile Include="mod.cpp" />
+    <ClCompile Include="new-igt.cpp" />
+    <ClCompile Include="new_igt_autosplitter.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

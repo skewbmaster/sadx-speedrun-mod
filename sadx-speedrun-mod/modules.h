@@ -1,9 +1,17 @@
 #pragma once
 #include <string>
+#include <chrono>
 
-
-void init_quick_save_reload(std::string savepath, std::string filepath, int savenum, char* injectedMemory);
+// Quick Save Reload
+void init_quick_save_reload(std::string savepath, std::string filepath, int savenum);
 void onFrame_quick_save_reload();
 
-void init_gamma_timer(char* injectedMemory, char* accessibleMemory);
+// Gamma Timer
+void init_gamma_timer(char* accessibleMemory);
 void run_gamma_timer();
+
+// New IGT
+void init_new_igt(char* accessibleMemory);
+void get_RTA_time();
+void start_RTA_timer();
+void stop_RTA_timer();

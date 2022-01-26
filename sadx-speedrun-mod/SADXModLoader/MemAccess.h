@@ -181,6 +181,12 @@ static inline BOOL WriteCall(void *writeaddress, void *funcaddress)
 	return WriteData(writeaddress, data);
 }
 
+template <int count>
+static inline BOOL WriteNop(void* writeaddress)
+{
+	return WriteData<count>(writeaddress, 0x90);
+}
+
 static inline BOOL WritePointer(void* writeaddress, int pointeraddress)
 {
 	return WriteData(writeaddress, (void*) &pointeraddress, 4);

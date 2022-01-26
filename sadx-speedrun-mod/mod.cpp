@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "modules.h"
 
+
 static bool isQuickSaveEnabled;
 
-static char* injectedMemory; // For injected code
 static char* accessibleMemory; // For referencing variables externally 
 
 extern "C"
@@ -23,31 +23,32 @@ extern "C"
 
 		PrintDebug("Savenum: %d\n", save_num);
 
-		injectedMemory = (char*) malloc(128);
 		accessibleMemory = (char*) malloc(64);
 
-		PrintDebug("injectedMem Pointer Initial: %X\n", injectedMemory);
 		PrintDebug("accessMem Pointer Initial: %X\n", accessibleMemory);
+
+		//WritePointer((void*) 0x426028, (int) &accessibleMemory); // Write our memory pointer into padded sonic.exe memory
+		WriteData((void*) 0x426028, (void*) &accessibleMemory, 4);
+
+		init_gamma_timer(accessibleMemory); // 0x0C Bytes used in accessibleMemory
+
+		accessibleMemory += 0x20; // Offset by 0x20, might be useful in the future
+
+		init_new_igt(accessibleMemory);
 
 		if (isQuickSaveEnabled)
 		{
 			if (premadeSave == "Custom")
 			{
-				init_quick_save_reload(std::string(helper_funcs.GetMainSavePath()) + "\\", saveFilePath, save_num, injectedMemory);
+				init_quick_save_reload(std::string(helper_funcs.GetMainSavePath()) + "\\", saveFilePath, save_num);
 			}
 			else
 			{
-				init_quick_save_reload(std::string(helper_funcs.GetMainSavePath()) + "\\", std::string(path) + "\\premadeSaves\\" + premadeSave + ".snc", save_num, injectedMemory);
+				init_quick_save_reload(std::string(helper_funcs.GetMainSavePath()) + "\\", std::string(path) + "\\premadeSaves\\" + premadeSave + ".snc", save_num);
 			}
-
-			injectedMemory += 0x1E; // increment pointer regardless since code length is the same
 		}
 
-		init_gamma_timer(injectedMemory,    // 0x11 Bytes used in injectedMemory
-			             accessibleMemory); // 0x0C Bytes used in accessibleMemory
-
-		injectedMemory += 0x11;
-		accessibleMemory += 0xC;
+		
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame()
@@ -63,7 +64,13 @@ extern "C"
 		if (FrameCounter > 120)
 		{
 			run_gamma_timer();
+
+			//long double seconds = get_RTA_time() * 0.000001;
+			
+			//PrintDebug("%Lf\n", seconds);
 		}
+
+		get_RTA_time();
 	}
 
 	__declspec(dllexport) ModInfo SADXModInfo = { ModLoaderVer };

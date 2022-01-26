@@ -24,6 +24,12 @@
     <ClInclude Include="modules.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="new_igt_asm.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="new_igt_autosplitter.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="mod.cpp">
@@ -36,6 +42,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="gamma-timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="new-igt.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="new_igt_autosplitter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
