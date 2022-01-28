@@ -1,10 +1,12 @@
 #pragma once
 
 static char* flags;
-static long long flaggedFrameCounter;
+static long flaggedFrameCounter;
 static bool flagUpdated;
 
-void init_autosplitter(char* accessibleMemory);
+static long long* NewIGTFrameCounterPointer;
+
+void init_autosplitter(char* accessibleMemory, long long* framesPointer);
 
 static void* jumpBackPtrs[] = { (void*)0x40C6AE };
 static void* callPtrs[] = { (void*)0x642640 };
@@ -23,6 +25,8 @@ static __declspec(naked) void startStory()
 	}
 
 	strcpy_s(flags, 11, "StoryStart");
+	flaggedFrameCounter = *NewIGTFrameCounterPointer;
+	flagUpdated = true;
 
 	__asm
 	{

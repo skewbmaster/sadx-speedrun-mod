@@ -7,7 +7,7 @@
 #include <string>
 
 #define STARTUP_MESSAGE_TIMER_LENGTH 900
-#define RELOAD_MESSAGE_TIMER_LENGTH 220
+#define RELOAD_MESSAGE_TIMER_LENGTH 200
 
 bool init = false;
 
@@ -36,8 +36,6 @@ bool load_save_file_data();
 bool write_to_dest_save_file();
 void inject_failsafe_code();
 
-static char* injectedMemory;
-
 void init_quick_save_reload(std::string savepath, std::string filepath, int savenum)
 {
 	save_file_path = filepath;
@@ -45,7 +43,6 @@ void init_quick_save_reload(std::string savepath, std::string filepath, int save
 
 	save_num = savenum;
 
-	injectedMemory = (char*) malloc(0x20);
 	inject_failsafe_code(); // Save to the same file every time
 
 
@@ -202,20 +199,34 @@ bool write_to_dest_save_file()
 	return true;
 }
 
+static __declspec(naked) void inject_asm()
+{
+	__asm
+	{
+		push ecx
+
+		mov ecx, esi
+		add ecx, 0x12
+		mov byte ptr [ecx], 01
+
+		add ecx, 1
+		mov byte ptr [ecx], 02
+
+		pop ecx
+
+		push 0x7DDE60
+		
+		push 0xDEADBEEF // 5 Byte offset for jump instruction
+	}
+}
 void inject_failsafe_code()
 {
 	char numchar1 = (char) (48 + save_num / 10); // Calculate ASCII character for the decimal digits
 	char numchar2 = (char) (48 + save_num % 10);
 
-	const char memSize = 0x19;
+	WriteData((void*) (reinterpret_cast<int>(&inject_asm) + 0x08), &numchar1, 1);
+	WriteData((void*) (reinterpret_cast<int>(&inject_asm) + 0x0E), &numchar2, 1);
+	WriteJump((void*) (reinterpret_cast<int>(&inject_asm) + 0x15), (void*) 0x422160);
 
-	char code[memSize] = { 0x51, 0x52, 0x8B, 0xCE, 0xB2, numchar1, 0x83, 0xC1, 0x12, 0x88,
-						   0x11, 0xB2, numchar2, 0x83,	0xC1, 0x01, 0x88, 0x11, 0x5A, 0x59,
-						   0x68, 0x60, 0xDE, 0x7D, 0x00 };
-
-	memcpy(injectedMemory, code, memSize);
-	WriteJump(injectedMemory + memSize, (void*) 0x422160);
-
-	WriteJump((void*) 0x42215B, injectedMemory);
+	WriteJump((void*) 0x42215B, &inject_asm);
 }
-

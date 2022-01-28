@@ -21,17 +21,12 @@ extern "C"
 		delete configFile;
 		// Config File End
 
-		PrintDebug("Savenum: %d\n", save_num);
-
 		accessibleMemory = (char*) malloc(64);
-
 		PrintDebug("accessMem Pointer Initial: %X\n", accessibleMemory);
 
-		//WritePointer((void*) 0x426028, (int) &accessibleMemory); // Write our memory pointer into padded sonic.exe memory
-		WriteData((void*) 0x426028, (void*) &accessibleMemory, 4);
+		WritePointer((void*) 0x426028, reinterpret_cast<int>(accessibleMemory)); // Write our memory pointer into padded sonic.exe memory
 
 		init_gamma_timer(accessibleMemory); // 0x0C Bytes used in accessibleMemory
-
 		accessibleMemory += 0x20; // Offset by 0x20, might be useful in the future
 
 		init_new_igt(accessibleMemory);
@@ -47,8 +42,6 @@ extern "C"
 				init_quick_save_reload(std::string(helper_funcs.GetMainSavePath()) + "\\", std::string(path) + "\\premadeSaves\\" + premadeSave + ".snc", save_num);
 			}
 		}
-
-		
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame()
@@ -61,14 +54,7 @@ extern "C"
 
 	__declspec(dllexport) void __cdecl OnInput()
 	{
-		if (FrameCounter > 120)
-		{
-			run_gamma_timer();
-
-			//long double seconds = get_RTA_time() * 0.000001;
-			
-			//PrintDebug("%Lf\n", seconds);
-		}
+		run_gamma_timer();
 
 		get_RTA_time();
 	}

@@ -1,9 +1,6 @@
 #include "pch.h"
 #include "modules.h"
 
-#include "new_igt_autosplitter.h"
-
-
 static long long NewIGTFrameCounter;
 
 static long long totalRTATime;
@@ -11,11 +8,10 @@ static long long currentRTATime;
 static std::chrono::high_resolution_clock::time_point rtaTimeStart;
 static bool timingRTA;
 
-
 char oldGameMode;
 int creditsCounter;
 
-
+#include "new_igt_autosplitter.h"
 #include "new_igt_asm.h"
 
 
@@ -47,9 +43,7 @@ void init_new_igt(char* accessibleMemory)
 	WritePointer(accessibleMemory + 0x0C, reinterpret_cast<int>(&currentRTATime));
 	WritePointer(accessibleMemory + 0x10, reinterpret_cast<int>(&timingRTA));
 
-
-	init_autosplitter(accessibleMemory);
-
+	init_autosplitter(accessibleMemory, &NewIGTFrameCounter);
 
 	PrintDebug("IGT Initialised\n");
 }
