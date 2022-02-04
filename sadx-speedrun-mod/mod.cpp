@@ -50,7 +50,7 @@ extern "C"
 		{
 			onFrame_quick_save_reload();
 		}
-			DisplayChaoStats();
+		DisplayChaoStatsOnFrame();
 	}
 
 	__declspec(dllexport) void __cdecl OnInput()
