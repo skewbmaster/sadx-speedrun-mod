@@ -103,6 +103,7 @@
     <ClInclude Include="modules.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ChaoStatViewer.cpp" />
     <ClCompile Include="gamma-timer.cpp" />
     <ClCompile Include="mod.cpp" />
     <ClCompile Include="new-igt.cpp" />
