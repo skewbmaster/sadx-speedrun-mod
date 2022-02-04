@@ -19,6 +19,7 @@ void init_new_igt(char* accessibleMemory)
 {
 	NewIGTFrameCounter = 0;
 	totalRTATime = 0;
+	currentRTATime = 0;
 	timingRTA = false;
 
 	oldGameMode = GameMode;

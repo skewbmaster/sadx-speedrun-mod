@@ -2,7 +2,6 @@
 
 static void* sonicAddressPointers[] = { (void*)0x77ED40, (void*)0x42F04B, (void*)0x42F064, (void*)0x4380C2, (void*)0x40CC69 };
 
-
 static __declspec(naked) void beforeMoviePlay()
 {
 	__asm
@@ -70,30 +69,38 @@ static __declspec(naked) void incrementFromOtherFrameCounter()
 		mov ecx, [ecx]
 
 		cmp ecx, 1
-		je increment
+		je increment // if gameMode == 1 Splash Logos
 
 		cmp ecx, 12
-		je increment
+		je increment // if gameMode == 12 Title + Menus
 
 		cmp ecx, 18
-		je increment
+		je incrementScalar // if gameMode == 18 Story Introduction
 
 		cmp ecx, 20
-		je increment
+		je incrementScalar // if gameMode == 20 Instruction
 
 		mov ecx, 0x3B22DE4
 		mov ecx, [ecx]
 
 		cmp ecx, 19
-		je increment
+		je incrementScalar // if gameState == 19 Game over
 
 		cmp ecx, 16
-		je increment
+		je incrementScalar // if gameState == 16 Pause
 
 		jmp jumpBack
 
-		increment:
+		increment: // Normal increments
 		inc dword ptr NewIGTFrameCounter
+		jmp jumpBack
+
+
+		incrementScalar: // Increments for different framerate settings
+		mov ecx, 0x89295C
+		mov ecx, [ecx]
+
+		add dword ptr NewIGTFrameCounter, ecx
 
 		jumpBack:
 		mov ecx, 0x3ABDF58
