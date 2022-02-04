@@ -30,7 +30,7 @@ extern "C"
 		accessibleMemory += 0x20; // Offset by 0x20, might be useful in the future
 
 		init_new_igt(accessibleMemory);
-		displayChaoStatsInit();
+		
 		if (isQuickSaveEnabled)
 		{
 			if (premadeSave == "Custom")
@@ -42,6 +42,8 @@ extern "C"
 				init_quick_save_reload(std::string(helper_funcs.GetMainSavePath()) + "\\", std::string(path) + "\\premadeSaves\\" + premadeSave + ".snc", save_num);
 			}
 		}
+		
+		displayChaoStatsInit();
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame()
