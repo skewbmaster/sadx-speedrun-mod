@@ -15,3 +15,6 @@ void init_new_igt(char* accessibleMemory);
 void get_RTA_time();
 void start_RTA_timer();
 void stop_RTA_timer();
+
+// Chao Stat Grade Viewer
+void DisplayChaoStats();
