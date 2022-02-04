@@ -3,7 +3,6 @@
 
 
 static bool isQuickSaveEnabled;
-static bool isChaoStatViewerEnabled;
 
 static char* accessibleMemory; // For referencing variables externally 
 
@@ -15,7 +14,6 @@ extern "C"
 		const IniFile* configFile = new IniFile(std::string(path) + "\\config.ini");
 
 		isQuickSaveEnabled = configFile->getBool("QuickSaveSettings", "Enabled", false);
-		isChaoStatViewerEnabled = configFile->getBool("OtherSettings", "ChaoStatViewerEnabled", true);
 		std::string premadeSave = configFile->getString("QuickSaveSettings", "PremadeFile", "Custom");
 		std::string saveFilePath = configFile->getString("QuickSaveSettings", "SaveFilePath");
 		int save_num = configFile->getInt("QuickSaveSettings", "SaveNum", 99);
@@ -32,7 +30,7 @@ extern "C"
 		accessibleMemory += 0x20; // Offset by 0x20, might be useful in the future
 
 		init_new_igt(accessibleMemory);
-
+		displayChaoStatsInit();
 		if (isQuickSaveEnabled)
 		{
 			if (premadeSave == "Custom")
@@ -52,10 +50,7 @@ extern "C"
 		{
 			onFrame_quick_save_reload();
 		}
-		if (isChaoStatViewerEnabled)
-		{
 			DisplayChaoStats();
-		}
 	}
 
 	__declspec(dllexport) void __cdecl OnInput()
