@@ -17,5 +17,5 @@ void start_RTA_timer();
 void stop_RTA_timer();
 
 // Chao Stat Grade Viewer
-void DisplayChaoStats();
+void DisplayChaoStatsOnFrame();
 void displayChaoStatsInit();
