@@ -39,7 +39,7 @@ void displayChaoStatsInit()
 	WriteJump((void*)0x71ADCE, &chaoFileCreated_asm);
 }
 
-void DisplayChaoStats()
+void DisplayChaoStatsOnFrame()
 {
 	if (showmenu) //checks if garden has been show befroe
 	{
