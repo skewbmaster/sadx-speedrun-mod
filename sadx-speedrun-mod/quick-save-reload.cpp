@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "modules.h"
 
-
 #include <fstream>
 #include <filesystem>
 #include <string>
@@ -31,6 +30,18 @@ std::string game_save_file_name;
 
 int oldGameMode;
 int completedGammaLevels = 0;
+
+void ScaleDebugFontQSR(int scale, bool enableFontScaling)//thanks to PkR for this code https://github.com/PiKeyAr/sadx-debug-mode/
+{
+	float FontScale;
+	if (!enableFontScaling) FontScale = 1.0f;
+	else
+	{
+		if ((float)HorizontalResolution / (float)VerticalResolution > 1.33f) FontScale = floor((float)VerticalResolution / 480.0f);
+		else FontScale = floor((float)HorizontalResolution / 640.0f);
+	}
+	SetDebugFontSize(FontScale * scale);
+}
 
 bool load_save_file_data();
 bool write_to_dest_save_file();
@@ -94,6 +105,7 @@ void onFrame_quick_save_reload()
 
 	oldGameMode = GameMode;
 
+	ScaleDebugFontQSR(15, true);
 	if (startup_message_timer < STARTUP_MESSAGE_TIMER_LENGTH)
 	{
 		if (!init)
