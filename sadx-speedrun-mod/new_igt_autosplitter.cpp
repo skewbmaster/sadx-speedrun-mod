@@ -15,6 +15,7 @@ void init_autosplitter(char* accessibleMemory, long long* framesPointer)
 
 	NewIGTFrameCounterPointer = framesPointer;
 
+	WriteData<MAX_FLAG_NAME_SIZE>(flags, 0); // Write our flags with nothing so there's no confusion in external reading
 	strcpy_s(flags, 10, "GameStart");
 	
 	WritePointer(accessibleMemory + 0x14, reinterpret_cast<int>(flags));
@@ -25,7 +26,7 @@ void init_autosplitter(char* accessibleMemory, long long* framesPointer)
 	WriteJump((void*) 0x40C6A8, &startStory);
 	WriteNop<1>((void*) 0x40C6AD);
 
-	PrintDebug("yeppenguin: %X\n", &flagController);
+	PrintDebug("yeppenguin: %X\n", &generalFlagController);
 	PrintDebug("whypenguin: %X\n", &testFunc);
 
 	// 0x4B4250 Emblem increment from level split

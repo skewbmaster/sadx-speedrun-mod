@@ -49,7 +49,7 @@ static __declspec(naked) void incrementFromCameraMain()
 		jmp sonicAddressPointers[12]
 	}
 }
-static __declspec(naked) void incrementFromOtherFrameCounter()
+static __declspec(naked) void incrementFromMainFrameCounter()
 {
 	__asm
 	{

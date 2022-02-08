@@ -33,7 +33,7 @@ void init_new_igt(char* accessibleMemory)
 	WriteJump((void*) 0x4380BC, &incrementFromCameraMain);
 	WriteNop<1>((void*) 0x4380C1);
 
-	WriteJump((void*) 0x40CC62, &incrementFromOtherFrameCounter);
+	WriteJump((void*) 0x40CC62, &incrementFromMainFrameCounter);
 	WriteNop<2>((void*) 0x40CC67);
 	WriteNop<6>((void*) 0x40CC71);
 
