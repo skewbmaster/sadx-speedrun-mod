@@ -10,6 +10,12 @@
 void init_autosplitter(char* accessibleMemory, long long* framesPointer)
 {
 	flags = (char*) malloc(MAX_FLAG_NAME_SIZE);
+	if (flags == NULL)
+	{
+		PrintDebug("Couldn't allocate flags");
+		return;
+	}
+
 	flaggedFrameCounter = 0;
 	flagUpdated = false;
 
@@ -30,4 +36,41 @@ void init_autosplitter(char* accessibleMemory, long long* framesPointer)
 	PrintDebug("whypenguin: %X\n", &testFunc);
 
 	// 0x4B4250 Emblem increment from level split
+}
+
+static void setFlag(const char* flagText, int length)
+{
+	strcpy_s(flags, length + 1, flagText);
+	std::string curlvl = std::to_string(CurrentLevel);
+	//curlvl.
+
+	//strcpy_s();
+
+	flaggedFrameCounter = *NewIGTFrameCounterPointer;
+	flagUpdated = true;
+}
+
+static __declspec(naked) void startStory()
+{
+	__asm push edx
+
+	setFlag("StoryStart", 10);
+
+	__asm
+	{
+		pop edx
+		push ebx
+		call callPtrs[0]
+		jmp jumpBackPtrs[0]
+	}
+}
+
+static __declspec(naked) void getEmblemLevel()
+{
+	setFlag("Haha", 4);
+
+	__asm
+	{
+
+	}
 }

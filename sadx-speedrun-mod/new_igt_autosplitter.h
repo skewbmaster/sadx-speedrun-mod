@@ -13,42 +13,10 @@ static void* callPtrs[] = { (void*)0x642640 };
 
 static int registerBuffer[4];
 
-static void setFlag(const char* flagText, int length)
-{
-	strcpy_s(flags, length + 1, flagText);
-	std::string curlvl = std::to_string(CurrentLevel);
-	//curlvl.
-	
-	//strcpy_s();
-	
-	flaggedFrameCounter = *NewIGTFrameCounterPointer;
-	flagUpdated = true;
-}
+static void setFlag(const char* flagText, int length);
 
-static __declspec(naked) void startStory()
-{
-	__asm push edx
-
-	setFlag("StoryStart", 10);
-
-	__asm
-	{
-		pop edx
-		push ebx
-		call callPtrs[0]
-		jmp jumpBackPtrs[0]
-	}
-}
-
-static __declspec(naked) void getEmblemLevel()
-{
-	setFlag("Haha", 4);
-
-	__asm
-	{
-
-	}
-}
+static void startStory();
+static void getEmblemLevel();
 
 
 static __declspec(naked) void generalFlagController(char a1)
