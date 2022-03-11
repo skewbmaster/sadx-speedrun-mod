@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "modules.h"
 
-
 static bool isQuickSaveEnabled;
 
 static char* accessibleMemory; // For referencing variables externally 
@@ -17,6 +16,7 @@ extern "C"
 		std::string premadeSave = configFile->getString("QuickSaveSettings", "PremadeFile", "Custom");
 		std::string saveFilePath = configFile->getString("QuickSaveSettings", "SaveFilePath");
 		int save_num = configFile->getInt("QuickSaveSettings", "SaveNum", 99);
+		bool isCCEF_Enabled = configFile->getBool("OtherSettings", "CCEF", true);
 		
 		delete configFile;
 		// Config File End
@@ -44,6 +44,16 @@ extern "C"
 		}
 		
 		displayChaoStatsInit();
+
+		// CCEF, rewrite two places where there is a mov instead of or
+		if (isCCEF_Enabled)
+		{
+			WriteData<uint16_t>((uint16_t*) 0x434870, 0x0D81);
+			WriteData<uint16_t>((uint16_t*) 0x438330, 0x0D81);
+		}
+
+		WriteNop<3>((void*) 0x533939);
+		WriteNop<2>((void*) 0x440EF5);
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame()
