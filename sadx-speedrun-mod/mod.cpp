@@ -52,6 +52,7 @@ extern "C"
 			WriteData<uint16_t>((uint16_t*) 0x438330, 0x0D81);
 		}
 
+		// Egg Hornet Crash Fix
 		WriteNop<3>((void*) 0x533939);
 		WriteNop<2>((void*) 0x440EF5);
 	}
