@@ -2,16 +2,34 @@
 <ConfigSchema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://www.sonicretro.org">
   <Groups>
     <Group name="QuickSaveSettings" display="Quick Save Settings">
+	  <Property name="Enabled" type="bool" defaultvalue="false" display="Enabled" alwaysinclude="true">
+	    <HelpText>Do you want to enable the quick save module?</HelpText>
+	  </Property>
+	  <Property name="PremadeFile" type="Story" defaultvalue="Custom" display="Premade Save" alwaysinclude="true">
+	    <HelpText>If you want to reload a specific story just select one of the premade ones.          If you want to use your own, select "custom" and provide the path</HelpText>
+	  </Property>
       <Property name="SaveFilePath" type="string" defaultvalue="" display="Save File Path" >
         <HelpText>The save file that will reload when you go back to the main menu. Enter path relative to sadx folder e.g. Save in savedata folder: savedata/knuxsave.snc</HelpText>
       </Property>
-      <Property name="SaveNum" type="int" defaultvalue="99" minvalue="1" maxvalue="99" display="In-game save number" >
+      <Property name="SaveNum" type="int" defaultvalue="99" minvalue="1" maxvalue="99" display="In-game save number">
         <HelpText>This is the save number in game that will be used, other save files will not be affected but this one. e.g. Choosing number 8 will only replace SonicDX08.snc</HelpText>
       </Property>
     </Group>
 	
 	<Group name="OtherSettings">
-	  
+	  <Property name="CCEF" type="bool" defaultvalue="true" display="Camera Code Error Fix">
+		<HelpText>CCEF fixes a bug so that the camera doesn't reset to Auto Cam when set to Free Cam (Recommended)</HelpText>
+	  </Property>
 	</Group>
   </Groups>
+  <Enums>
+    <Enum name="Story">
+	  <EnumMember name="Custom" />
+      <EnumMember name="Sonic" />
+      <EnumMember name="Tails" />
+      <EnumMember name="Knuckles" />
+	  <EnumMember name="Amy" />
+	  <EnumMember name="GammaBig" display="Gamma or Big"/>
+    </Enum>
+  </Enums>
 </ConfigSchema>
