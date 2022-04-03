@@ -2,6 +2,7 @@
 #include "modules.h"
 
 static bool isQuickSaveEnabled;
+static bool isFreeCamEnabled;
 
 static char* accessibleMemory; // For referencing variables externally 
 
@@ -13,6 +14,7 @@ extern "C"
 		const IniFile* configFile = new IniFile(std::string(path) + "\\config.ini");
 
 		isQuickSaveEnabled = configFile->getBool("QuickSaveSettings", "Enabled", false);
+		isFreeCamEnabled = configFile->getBool("OtherSettings", "FreeCam", false);
 		std::string premadeSave = configFile->getString("QuickSaveSettings", "PremadeFile", "Custom");
 		std::string saveFilePath = configFile->getString("QuickSaveSettings", "SaveFilePath");
 		int save_num = configFile->getInt("QuickSaveSettings", "SaveNum", 99);
@@ -55,6 +57,9 @@ extern "C"
 		// Egg Hornet Crash Fix
 		WriteNop<3>((void*) 0x533939);
 		WriteNop<2>((void*) 0x440EF5);
+
+		if (isFreeCamEnabled)
+			WriteData<uint8_t>((uint8_t*) 0x03B2CBA8, 7);
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame()

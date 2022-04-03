@@ -20,6 +20,9 @@
 	  <Property name="CCEF" type="bool" defaultvalue="true" display="Camera Code Error Fix">
 		<HelpText>CCEF fixes a bug so that the camera doesn't reset to Auto Cam when set to Free Cam (Recommended)</HelpText>
 	  </Property>
+	  <Property name="FreeCam" type="bool" defaultvalue="false" display="Start in Free Camera">
+		<HelpText>Start the game directly in Free Camera, you need CCEF enabled for this to work</HelpText>
+	  </Property>
 	</Group>
   </Groups>
   <Enums>
