@@ -13,11 +13,11 @@ extern "C"
 		const IniFile* configFile = new IniFile(std::string(path) + "\\config.ini");
 
 		isQuickSaveEnabled = configFile->getBool("QuickSaveSettings", "Enabled", false);
-		bool isFreeCamEnabled = configFile->getBool("OtherSettings", "FreeCam", false);
 		std::string premadeSave = configFile->getString("QuickSaveSettings", "PremadeFile", "Custom");
 		std::string saveFilePath = configFile->getString("QuickSaveSettings", "SaveFilePath");
 		int save_num = configFile->getInt("QuickSaveSettings", "SaveNum", 99);
 		bool isCCEF_Enabled = configFile->getBool("OtherSettings", "CCEF", true);
+		bool isFreeCamEnabled = configFile->getBool("OtherSettings", "FreeCam", false);
 		
 		delete configFile;
 		// Config File End
