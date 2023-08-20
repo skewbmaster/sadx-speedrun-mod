@@ -16,6 +16,7 @@ extern "C"
 		std::string premadeSave = configFile->getString("QuickSaveSettings", "PremadeFile", "Custom");
 		std::string saveFilePath = configFile->getString("QuickSaveSettings", "SaveFilePath");
 		int save_num = configFile->getInt("QuickSaveSettings", "SaveNum", 99);
+		bool isForceReloadEnabled = configFile->getBool("QuickSaveSettings", "ForceReload", false);
 		bool isCCEF_Enabled = configFile->getBool("OtherSettings", "CCEF", true);
 		bool isFreeCamEnabled = configFile->getBool("OtherSettings", "FreeCam", false);
 		
@@ -36,11 +37,11 @@ extern "C"
 		{
 			if (premadeSave == "Custom")
 			{
-				init_quick_save_reload(std::string(helper_funcs.GetMainSavePath()) + "\\", saveFilePath, save_num);
+				init_quick_save_reload(std::string(helper_funcs.GetMainSavePath()) + "\\", saveFilePath, save_num, isForceReloadEnabled);
 			}
 			else
 			{
-				init_quick_save_reload(std::string(helper_funcs.GetMainSavePath()) + "\\", std::string(path) + "\\premadeSaves\\" + premadeSave + ".snc", save_num);
+				init_quick_save_reload(std::string(helper_funcs.GetMainSavePath()) + "\\", std::string(path) + "\\premadeSaves\\" + premadeSave + ".snc", save_num, isForceReloadEnabled);
 			}
 		}
 		

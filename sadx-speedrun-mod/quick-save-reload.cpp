@@ -25,10 +25,14 @@ std::string save_file_path;
 
 int save_num;
 
+bool is_force_reload_enabled;
+bool was_y_pressed;
+
 std::string game_save_file_path;
 std::string game_save_file_name;
 
 int oldGameMode;
+uint8_t oldMusic;
 int completedGammaLevels = 0;
 
 void ScaleDebugFontQSR(int scale, bool enableFontScaling)//thanks to PkR for this code https://github.com/PiKeyAr/sadx-debug-mode/
@@ -47,12 +51,14 @@ bool load_save_file_data();
 bool write_to_dest_save_file();
 void inject_failsafe_code();
 
-void init_quick_save_reload(std::string savepath, std::string filepath, int savenum)
+void init_quick_save_reload(std::string savepath, std::string filepath, int savenum, bool isForceReloadEnabled)
 {
 	save_file_path = filepath;
 	game_save_file_path = savepath;
 
 	save_num = savenum;
+
+	is_force_reload_enabled = isForceReloadEnabled;
 
 	inject_failsafe_code(); // Save to the same file every time
 
@@ -80,29 +86,45 @@ void init_quick_save_reload(std::string savepath, std::string filepath, int save
 	init = true;
 }
 
+void reload_save_file()
+{
+	if ((SaveFile.Emblems[0xB] & 0x8 && !(SaveFile.Emblems[0xB] & 0x2) && completedGammaLevels == 0) // If done with gamma hot shelter but not red mountain, and not incremented
+		|| (SaveFile.Emblems[0xB] & 0x2 && completedGammaLevels == 1) // If done with red mountain and only incremented levels once
+		|| (SaveFile.Emblems[0xB] & 0x1 && completedGammaLevels == 2)) // If done with windy valley and only incremented levels twice
+	{
+		completedGammaLevels++;
+		oldGameMode = 12;
+		return;
+	}
+
+	completedGammaLevels = 0;
+
+	reload_message_displayed = true;
+	reload_message_timer = 0;
+
+	memcpy(&SaveFile, save_file_data, sizeof(SaveFileData));
+	write_to_dest_save_file();
+	LoadSave();
+}
+
+DataPointer(uint8_t, CurrentMusic, 0x912698);
+//CurrentMusic == MusicIDs_TitleScreen && CurrentMusic != oldMusic
 void onFrame_quick_save_reload()
 {
 	if (init && oldGameMode != 12 && GameMode == 12)
 	{
-		if ((SaveFile.Emblems[0xB] & 0x8 && !(SaveFile.Emblems[0xB] & 0x2) && completedGammaLevels == 0) // If done with gamma hot shelter but not red mountain, and not incremented
-			|| (SaveFile.Emblems[0xB] & 0x2 && completedGammaLevels == 1) // If done with red mountain and only incremented levels once
-			|| (SaveFile.Emblems[0xB] & 0x1 && completedGammaLevels == 2)) // If done with windy valley and only incremented levels twice
+		if (is_force_reload_enabled) 
 		{
-			completedGammaLevels++;
-			oldGameMode = 12;
-			return;
+			reload_save_file();
 		}
-
-		completedGammaLevels = 0;
-
-		reload_message_displayed = true;
-		reload_message_timer = 0;
-
-		memcpy(&SaveFile, save_file_data, sizeof(SaveFileData));
-		write_to_dest_save_file();
-		LoadSave();
+		else
+		{
+			reload_message_displayed = true;
+			reload_message_timer = 0;
+		}
 	}
 
+	oldMusic = CurrentMusic;
 	oldGameMode = GameMode;
 
 	ScaleDebugFontQSR(15, true);
@@ -157,17 +179,56 @@ void onFrame_quick_save_reload()
 
 	if (reload_message_displayed)
 	{
-		if (reload_message_timer < RELOAD_MESSAGE_TIMER_LENGTH)
+		if (is_force_reload_enabled)
 		{
-			SetDebugFontColor(0xFF00FFAA);
-			DisplayDebugString(NJM_LOCATION(1, 1), "SADX Quick Save Reload");
+			if (reload_message_timer < RELOAD_MESSAGE_TIMER_LENGTH)
+			{
+				SetDebugFontColor(0xFF00FFAA);
+				DisplayDebugString(NJM_LOCATION(1, 1), "SADX Quick Save Reload");
 
-			DisplayDebugString(NJM_LOCATION(1, 2), "Reloaded save file");
+				DisplayDebugString(NJM_LOCATION(1, 2), "Reloaded save file");
 
-			reload_message_timer++;
+				reload_message_timer++;
+			}
+			else
+				reload_message_displayed = false;
 		}
 		else
-			reload_message_displayed = false;
+		{
+			if (!was_y_pressed)
+			{
+				if (CurrentMusic != MusicIDs_TitleScreen && CurrentMusic != 255)
+					reload_message_displayed = false;
+
+				if (ControllerPointers[0]->PressedButtons & Buttons_Y)
+				{
+					reload_save_file();
+					was_y_pressed = true;
+				}
+
+				SetDebugFontColor(0xFF00FFAA);
+				DisplayDebugString(NJM_LOCATION(1, 1), "SADX Quick Save Reload");
+
+				DisplayDebugString(NJM_LOCATION(1, 2), "Press Y to reload save file");
+			}
+			else
+			{
+				if (reload_message_timer < RELOAD_MESSAGE_TIMER_LENGTH)
+				{
+					SetDebugFontColor(0xFF00FFAA);
+					DisplayDebugString(NJM_LOCATION(1, 1), "SADX Quick Save Reload");
+
+					DisplayDebugString(NJM_LOCATION(1, 2), "Reloaded save file");
+
+					reload_message_timer++;
+				}
+				else
+				{
+					was_y_pressed = false;
+					reload_message_displayed = false;
+				}
+			}
+		}
 	}
 }
 

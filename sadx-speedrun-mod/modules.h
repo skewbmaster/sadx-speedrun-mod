@@ -3,7 +3,7 @@
 #include <chrono>
 
 // Quick Save Reload
-void init_quick_save_reload(std::string savepath, std::string filepath, int savenum);
+void init_quick_save_reload(std::string savepath, std::string filepath, int savenum, bool isForceReloadEnabled);
 void onFrame_quick_save_reload();
 
 // Gamma Timer
