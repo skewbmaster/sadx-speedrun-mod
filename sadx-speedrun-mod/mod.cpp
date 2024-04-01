@@ -55,7 +55,7 @@ extern "C"
 		}
 		
 		if (isFreeCamEnabled)
-			WriteData<uint8_t>((uint8_t*) 0x03B2CBA8, 7);
+			WriteData<uint8_t>((uint8_t*) 0x03B2CBA8, 1);
 
 		// Egg Hornet Crash Fix
 		WriteNop<3>((void*) 0x533939);
