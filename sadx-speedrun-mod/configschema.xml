@@ -8,7 +8,7 @@
 	  <Property name="PremadeFile" type="Story" defaultvalue="Custom" display="Premade Save" alwaysinclude="true">
 	    <HelpText>If you want to reload a specific story just select one of the premade ones.          If you want to use your own, select "custom" and provide the path</HelpText>
 	  </Property>
-      <Property name="SaveFilePath" type="string" defaultvalue="" display="Save File Path" >
+      <Property name="SaveFilePath" type="string" defaultvalue="" display="Custom Save File Path" >
         <HelpText>The save file that will reload when you go back to the main menu. Enter path relative to sadx folder e.g. Save in savedata folder: savedata/knuxsave.snc</HelpText>
       </Property>
       <Property name="SaveNum" type="int" defaultvalue="99" minvalue="1" maxvalue="99" display="In-game save number">
@@ -26,6 +26,12 @@
 	  <Property name="FreeCam" type="bool" defaultvalue="false" display="Start in Free Camera">
 		<HelpText>Start the game directly in Free Camera, you need CCEF enabled for this to work</HelpText>
 	  </Property>
+	  <Property name="Skipma" type="bool" defaultvalue="true" display="Enable Skipma">
+		<HelpText>Allows you to skip cutscenes by holding start, rather than having to press start</HelpText>
+	  </Property>
+	  <Property name="FrameLimit" type="FrameLimitOption" defaultvalue="OFF" display="Frame Limit" alwaysinclude="true">
+	    <HelpText>Choose between letting the game run on vanilla framerate, or modern 60/63 FPS limiting</HelpText>
+	  </Property>
 	</Group>
   </Groups>
   <Enums>
@@ -37,5 +43,10 @@
 	  <EnumMember name="Amy" />
 	  <EnumMember name="GammaBig" display="Gamma or Big"/>
     </Enum>
+	<Enum name="FrameLimitOption">
+	  <EnumMember name="OFF" />
+	  <EnumMember name="60FPS" />
+	  <EnumMember name="63FPS" />
+	</Enum>
   </Enums>
 </ConfigSchema>

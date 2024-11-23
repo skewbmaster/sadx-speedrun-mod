@@ -21,21 +21,27 @@
     <ClInclude Include="pch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="modules.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="extensions-to-modloader.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="new_igt_asm.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="quick-save-reload.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="new_igt_autosplitter.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="gamma-timer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="chao-stat-viewer.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mod.cpp">
+    <ClCompile Include="dllmain.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="mod.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="quick-save-reload.cpp">
@@ -44,13 +50,13 @@
     <ClCompile Include="gamma-timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="new-igt.cpp">
+    <ClCompile Include="chao-stat-viewer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="new_igt_autosplitter.cpp">
+    <ClCompile Include="skipma.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="chao_stat_viewer.cpp">
+    <ClCompile Include="frame-limit.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

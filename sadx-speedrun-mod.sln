@@ -1,32 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31424.327
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sadx-speedrun-mod", "sadx-speedrun-mod\sadx-speedrun-mod.vcxproj", "{254D4E46-0993-4B43-B44D-FD8F25697581}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sadx-speedrun-mod", "sadx-speedrun-mod\sadx-speedrun-mod.vcxproj", "{DD2D7240-D2E5-473E-82D5-3AE4B8A6A0C8}"
 	ProjectSection(ProjectDependencies) = postProject
+		{90CF4AD9-6603-458F-8E3F-E99C0818E43D} = {90CF4AD9-6603-458F-8E3F-E99C0818E43D}
 		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B} = {EC0293F5-4BCF-46B2-8133-18CAEA141C5B}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModLoaderCommon", "ModLoaderCommon\ModLoaderCommon.vcxproj", "{EC0293F5-4BCF-46B2-8133-18CAEA141C5B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libmodutils", "sadx-mod-loader\libmodutils\libmodutils.vcxproj", "{90CF4AD9-6603-458F-8E3F-E99C0818E43D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ModLoaderCommon", "sadx-mod-loader\mod-loader-common\ModLoaderCommon\ModLoaderCommon.vcxproj", "{EC0293F5-4BCF-46B2-8133-18CAEA141C5B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
-		Publish|x86 = Publish|x86
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{254D4E46-0993-4B43-B44D-FD8F25697581}.Debug|x86.ActiveCfg = Debug|Win32
-		{254D4E46-0993-4B43-B44D-FD8F25697581}.Debug|x86.Build.0 = Debug|Win32
-		{254D4E46-0993-4B43-B44D-FD8F25697581}.Publish|x86.ActiveCfg = Publish|Win32
-		{254D4E46-0993-4B43-B44D-FD8F25697581}.Publish|x86.Build.0 = Publish|Win32
-		{254D4E46-0993-4B43-B44D-FD8F25697581}.Release|x86.ActiveCfg = Release|Win32
-		{254D4E46-0993-4B43-B44D-FD8F25697581}.Release|x86.Build.0 = Release|Win32
+		{DD2D7240-D2E5-473E-82D5-3AE4B8A6A0C8}.Debug|x86.ActiveCfg = Debug|Win32
+		{DD2D7240-D2E5-473E-82D5-3AE4B8A6A0C8}.Debug|x86.Build.0 = Debug|Win32
+		{DD2D7240-D2E5-473E-82D5-3AE4B8A6A0C8}.Release|x86.ActiveCfg = Release|Win32
+		{DD2D7240-D2E5-473E-82D5-3AE4B8A6A0C8}.Release|x86.Build.0 = Release|Win32
+		{90CF4AD9-6603-458F-8E3F-E99C0818E43D}.Debug|x86.ActiveCfg = Debug|Win32
+		{90CF4AD9-6603-458F-8E3F-E99C0818E43D}.Debug|x86.Build.0 = Debug|Win32
+		{90CF4AD9-6603-458F-8E3F-E99C0818E43D}.Release|x86.ActiveCfg = Release|Win32
+		{90CF4AD9-6603-458F-8E3F-E99C0818E43D}.Release|x86.Build.0 = Release|Win32
 		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B}.Debug|x86.ActiveCfg = Debug|Win32
 		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B}.Debug|x86.Build.0 = Debug|Win32
-		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B}.Publish|x86.ActiveCfg = Release|Win32
-		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B}.Publish|x86.Build.0 = Release|Win32
 		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B}.Release|x86.ActiveCfg = Release|Win32
 		{EC0293F5-4BCF-46B2-8133-18CAEA141C5B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
@@ -34,6 +36,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {B90A7F9F-5688-4BFF-A324-9DA77523FDD9}
+		SolutionGuid = {5AF526C7-E5CC-4EE9-BA1F-6E69D7812355}
 	EndGlobalSection
 EndGlobal

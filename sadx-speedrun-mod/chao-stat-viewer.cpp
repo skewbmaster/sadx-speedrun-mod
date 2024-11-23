@@ -1,14 +1,10 @@
-#include "modules.h"
 #include "pch.h"
-
-using std::string;
+#include "chao-stat-viewer.h"
 
 bool showmenu = false;
 bool EnableFontScaling = true;
-char* jumpBackAddress;
 
-const char* grades[] = { "E", "D", "C", "B", "A", "S" }; //array for turning hex number into Strings
-
+const char* grades[] = {"E", "D", "C", "B", "A", "S"}; //array for turning hex number into Strings
 
 void ScaleDebugFontChao(int scale, bool enableFontScaling)//thanks to PkR for this code https://github.com/PiKeyAr/sadx-debug-mode/
 {
@@ -22,22 +18,21 @@ void ScaleDebugFontChao(int scale, bool enableFontScaling)//thanks to PkR for th
 	SetDebugFontSize(FontScale * scale);
 }
 
+const char* jumpBackAddress = (char*)0x71ADD3;
 static __declspec(naked) void chaoFileCreated_asm()
 {
 	__asm
 	{
-		push edx
 		mov edx, 1
 		mov byte ptr[showmenu], dl
-		pop edx
 		add esp, 8
 		mov esi, eax
 		jmp jumpBackAddress
 	}
 }
-void displayChaoStatsInit()
+
+void DisplayChaoStatsInit()
 {
-	jumpBackAddress = (char*)0x71ADD3;
 	showmenu = false;
 	WriteJump((void*)0x71ADCE, &chaoFileCreated_asm);
 }

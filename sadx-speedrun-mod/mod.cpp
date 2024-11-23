@@ -1,9 +1,17 @@
 #include "pch.h"
-#include "modules.h"
+#include "extensions-to-modloader.h"
+#include "quick-save-reload.h"
+#include "gamma-timer.h"
+#include "chao-stat-viewer.h"
 
-static bool isQuickSaveEnabled;
+#define EXTERNAL_ACCESS_MEMLOC (void*)0x426028
+#define EXTERN_MEMSIZE 128
+static char* AccessibleMemory;
 
-static char* accessibleMemory; // For referencing variables externally 
+void FrameLimitSetup(int refreshRate);
+void SkipmaFix();
+
+bool isQuickSaveEnabled;
 
 extern "C"
 {
@@ -13,69 +21,80 @@ extern "C"
 		const IniFile* configFile = new IniFile(std::string(path) + "\\config.ini");
 
 		isQuickSaveEnabled = configFile->getBool("QuickSaveSettings", "Enabled", false);
+		bool isQuickSaveForced = configFile->getBool("QuickSaveSettings", "ForceLoad", false);
 		std::string premadeSave = configFile->getString("QuickSaveSettings", "PremadeFile", "Custom");
 		std::string saveFilePath = configFile->getString("QuickSaveSettings", "SaveFilePath");
 		int save_num = configFile->getInt("QuickSaveSettings", "SaveNum", 99);
-		bool isForceReloadEnabled = configFile->getBool("QuickSaveSettings", "ForceReload", false);
 		bool isCCEF_Enabled = configFile->getBool("OtherSettings", "CCEF", true);
-		bool isFreeCamEnabled = configFile->getBool("OtherSettings", "FreeCam", false);
-		
+		bool isFreeCamStart = configFile->getBool("OtherSettings", "FreeCam", false);
+		bool isSkipma_Enabled = configFile->getBool("OtherSettings", "Skipma", true);
+		std::string frameLimitOption = configFile->getString("OtherSettings", "FrameLimit", "OFF");
+
 		delete configFile;
 		// Config File End
 
-		accessibleMemory = (char*) malloc(64);
-		PrintDebug("accessMem Pointer Initial: %X\n", accessibleMemory);
-
-		WritePointer((void*) 0x426028, reinterpret_cast<int>(accessibleMemory)); // Write our memory pointer into padded sonic.exe memory
-
-		init_gamma_timer(accessibleMemory); // 0x0C Bytes used in accessibleMemory
-		accessibleMemory += 0x20; // Offset by 0x20, might be useful in the future
-
-		init_new_igt(accessibleMemory);
-		
 		if (isQuickSaveEnabled)
 		{
-			if (premadeSave == "Custom")
-			{
-				init_quick_save_reload(std::string(helper_funcs.GetMainSavePath()) + "\\", saveFilePath, save_num, isForceReloadEnabled);
+			std::string chosenFile;
+			if (premadeSave == "Custom") {
+				chosenFile = saveFilePath;
 			}
-			else
-			{
-				init_quick_save_reload(std::string(helper_funcs.GetMainSavePath()) + "\\", std::string(path) + "\\premadeSaves\\" + premadeSave + ".snc", save_num, isForceReloadEnabled);
+			else {
+				chosenFile = std::string(path) + "\\premadeSaves\\" + premadeSave + ".snc";
 			}
+			init_quick_save_reload(std::string(helper_funcs.GetMainSavePath()) + "\\", chosenFile, save_num, isQuickSaveForced);
 		}
-		
-		displayChaoStatsInit();
+
+		DisplayChaoStatsInit();
+
+		AccessibleMemory = (char*)malloc(EXTERN_MEMSIZE);
+		if (AccessibleMemory == nullptr) {
+			PrintDebug("Couldn't allocate memory for external access\n");
+		}
+		WritePointer(EXTERNAL_ACCESS_MEMLOC, AccessibleMemory);
+
+		AccessibleMemory = init_gamma_timer(AccessibleMemory); // +0x20 bytes
+
+
+		// FIXES
 
 		// CCEF, rewrite two places where there is a mov instead of or
 		if (isCCEF_Enabled)
 		{
-			WriteData<uint16_t>((uint16_t*) 0x434870, 0x0D81);
-			WriteData<uint16_t>((uint16_t*) 0x438330, 0x0D81);
+			WriteData<uint16_t>((uint16_t*)0x434870, 0x0D81);
+			WriteData<uint16_t>((uint16_t*)0x438330, 0x0D81);
 		}
-		
-		if (isFreeCamEnabled)
-			WriteData<uint8_t>((uint8_t*) 0x03B2CBA8, 1);
+
+		if (isFreeCamStart)
+			free_camera_mode |= 1;
+
+		if (isSkipma_Enabled) 
+			SkipmaFix();
 
 		// Egg Hornet Crash Fix
-		WriteNop<3>((void*) 0x533939);
-		WriteNop<2>((void*) 0x440EF5);
+		WriteNop<3>((void*)0x533939);
+		WriteNop<2>((void*)0x440EF5);
+
+		if (frameLimitOption != "OFF")
+		{
+			int frames = std::stoi(frameLimitOption);
+			PrintDebug("Frame limit: %dFPS\n", frames);
+			FrameLimitSetup(frames);
+		}
 	}
 
 	__declspec(dllexport) void __cdecl OnFrame()
 	{
-		if (isQuickSaveEnabled)
-		{
+		if (isQuickSaveEnabled) {
 			onFrame_quick_save_reload();
 		}
 		DisplayChaoStatsOnFrame();
+		run_gamma_timer();
 	}
 
 	__declspec(dllexport) void __cdecl OnInput()
 	{
-		run_gamma_timer();
 
-		get_RTA_time();
 	}
 
 	__declspec(dllexport) ModInfo SADXModInfo = { ModLoaderVer };
