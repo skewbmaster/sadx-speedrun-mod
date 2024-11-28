@@ -6,7 +6,7 @@
 #include <string>
 
 #define STARTUP_MESSAGE_TIMER_LENGTH 600
-#define RELOAD_MESSAGE_TIMER_LENGTH 200
+#define RELOAD_MESSAGE_TIMER_LENGTH 180
 
 bool init = false;
 bool force_load = false;
@@ -24,8 +24,8 @@ bool bad_file = false;
 bool bad_path = false;
 bool write_failed = false;
 
-bool reload_message_displayed = true;
-int reload_message_timer = 0;
+bool reloadedFlag = false;
+int reload_message_timer = RELOAD_MESSAGE_TIMER_LENGTH;
 int startup_message_timer = 0;
 
 void init_quick_save_reload(std::string savepath, std::string filepath, int savenum, bool forceload)
@@ -55,9 +55,27 @@ void init_quick_save_reload(std::string savepath, std::string filepath, int save
 void onFrame_quick_save_reload()
 {
 	if (init && GameMode == GameModes_Menu) {
-		if ((force_load && oldGameMode != GameMode) || ControllerPointers[0]->PressedButtons & Buttons_Y)
+		int menuState = -1;
+		if (SeqTP != nullptr) {
+			// The menu task has a variable for the current menu type
+			menuState = SeqTP->awp->work.ub[4];
+		}
+
+		// Check if we're on the title or gamemode select screen
+		if (menuState == 5 || menuState == 6)
 		{
-			reload_save_file();
+			if (!force_load && !reloadedFlag)
+			{
+				reload_message_timer = 0;
+			}
+			if ((force_load && oldGameMode != GameModes_Menu) || ControllerPointers[0]->PressedButtons & Buttons_Y)
+			{
+				reload_save_file();
+			}
+		}
+		else
+		{
+			reload_message_timer = RELOAD_MESSAGE_TIMER_LENGTH;
 		}
 	}
 
@@ -80,10 +98,11 @@ void onFrame_quick_save_reload()
 			else
 				DisplayDebugString(NJM_LOCATION(1, 2), "Save file could not be opened, The mod will not operate");
 
-			int remaining_time = (STARTUP_MESSAGE_TIMER_LENGTH - startup_message_timer) / 60;
 
 			if (startup_message_timer > 150)
 			{
+				int remaining_time = (STARTUP_MESSAGE_TIMER_LENGTH - startup_message_timer) / 60 + 1;
+
 				SetDebugFontColor(0xFF00FFAA);
 				DisplayDebugStringFormatted(NJM_LOCATION(1, 4), "(This message will disappear in %d seconds)", remaining_time);
 			}
@@ -93,55 +112,46 @@ void onFrame_quick_save_reload()
 		{
 			SetDebugFontColor(0xFF00FF00);
 			DisplayDebugString(NJM_LOCATION(1, 1), "SADX Quick Save Reload");
-
-			DisplayDebugStringFormatted(NJM_LOCATION(1, 2), "Using \"%s\"", custom_savefile_path.c_str());
-
+			DisplayDebugStringFormatted(NJM_LOCATION(1, 2), "Using [%s]", custom_savefile_path.c_str());
 			DisplayDebugStringFormatted(NJM_LOCATION(1, 3), "Load the %s save file", game_savefile_name.c_str());
 
-			int remaining_time = (STARTUP_MESSAGE_TIMER_LENGTH - startup_message_timer) / 60;
-
-			if (startup_message_timer > 150)
+			if (startup_message_timer > (STARTUP_MESSAGE_TIMER_LENGTH / 2))
 			{
+				int remaining_time = (STARTUP_MESSAGE_TIMER_LENGTH - startup_message_timer) / 60 + 1;
+
 				SetDebugFontColor(0xFF00FFAA);
 				DisplayDebugStringFormatted(NJM_LOCATION(1, 5), "(This message will disappear in %d seconds)", remaining_time);
 			}
 		}
 
-		reload_message_displayed = false;
-
 		startup_message_timer++;
 		return;
 	}
 
-	if (reload_message_displayed)
+	if (reload_message_timer < RELOAD_MESSAGE_TIMER_LENGTH)
 	{
-		if (reload_message_timer < RELOAD_MESSAGE_TIMER_LENGTH)
+		SetDebugFontColor(0xFF00FFAA);
+		if (force_load || reloadedFlag)
 		{
-			SetDebugFontColor(0xFF00FFAA);
 			DisplayDebugString(NJM_LOCATION(1, 1), "SADX Quick Save Reload");
-
 			DisplayDebugString(NJM_LOCATION(1, 2), "Reloaded save file");
-
-			reload_message_timer++;
 		}
 		else
-			reload_message_displayed = false;
+		{
+			DisplayDebugString(NJM_LOCATION(1, 1), "SADX Quick Save Reload");
+			DisplayDebugString(NJM_LOCATION(1, 2), "Press Y to reload file");
+		}
+
+		reload_message_timer++;
+	}
+	else
+	{
+		reloadedFlag = false;
 	}
 }
 
 void reload_save_file()
 {
-	int menuState = -1;
-	if (SeqTP != nullptr) {
-		// The menu task has a variable for the current menu type
-		menuState = SeqTP->awp->work.ub[4];
-	}
-
-	// Check if we're on the title or gamemode select screen
-	if (menuState != 5 && menuState != 6) 
-		return;
-	
-
 	if ((SaveFile.Emblems[0xB] & 0x8 && !(SaveFile.Emblems[0xB] & 0x2) && completedGammaLevels == 0) // If done with gamma hot shelter but not red mountain, and not incremented
 		|| (SaveFile.Emblems[0xB] & 0x2 && completedGammaLevels == 1) // If done with red mountain and only incremented levels once
 		|| (SaveFile.Emblems[0xB] & 0x1 && completedGammaLevels == 2)) // If done with windy valley and only incremented levels twice
@@ -154,7 +164,7 @@ void reload_save_file()
 
 	completedGammaLevels = 0;
 
-	reload_message_displayed = true;
+	reloadedFlag = true;
 	reload_message_timer = 0;
 
 	write_to_dest_save_file(); // Write initial save data into file immediately
