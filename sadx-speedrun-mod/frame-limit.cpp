@@ -53,7 +53,7 @@ LONGLONG tick_remainder = 0;
 #endif
 
 void __cdecl FrameLimit_r();
-Trampoline FrameLimit_t(0x007899E0, 0x007899E8, FrameLimit_r);
+Trampoline* FrameLimit_t = nullptr;
 void __cdecl FrameLimit_r()
 {
 	if (enable_frame_limit && QueryPerformanceFrequency(&PerformanceFrequency))
@@ -134,6 +134,10 @@ void __declspec(naked) calc_extra_tick_count_asm()
 
 void FrameLimitSetup(int refreshRate)
 {
+	// Speedrun Mod Patch: Move the Trampoline function replacement to the frame limiter initialization scope instead of the global scope.
+	// This avoids the function being replaced even when the frame limiter option is set to "OFF".
+	FrameLimit_t = new Trampoline(0x007899E0, 0x007899E8, FrameLimit_r);
+
 	QueryPerformanceCounter(&PerformanceCounter);
 #if FRAME_SKIP_MODE != FRAME_SKIP_MODE_DISABLE
 	tick_start = PerformanceCounter;
